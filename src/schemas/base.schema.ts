@@ -1,7 +1,15 @@
-import { Validator } from '@app/types'
+import { Validator, ValidationError } from '@app/types'
 import { getLastOf } from '@app/lib/get-last-of'
-import { getInitialMeta } from './shared'
+import { runRequiredCheck } from '@app/lib/run-required-check'
+import { runValidator } from '@app/lib/run-validator'
+import { runValidators } from '@app/lib/run-validators'
 import { Meta, BaseSchemaOptions } from './types'
+import { getInitialMeta } from './shared'
+
+interface BasicValidationResult {
+  hasPassed: boolean
+  errors: ValidationError[]
+}
 
 export class BaseSchema {
   constructor({
@@ -47,5 +55,33 @@ export class BaseSchema {
     lastValidator.message = text
 
     return this
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected runBasicValidation(value: any): BasicValidationResult {
+    const requiredCheck = runRequiredCheck(value, this.meta.required)
+
+    if (!requiredCheck.hasPassed) {
+      return {
+        hasPassed: false,
+        errors: requiredCheck.errors,
+      }
+    }
+
+    const baseValidation = runValidator(value, this.baseValidator)
+
+    if (!baseValidation.isValid) {
+      return {
+        hasPassed: false,
+        errors: [baseValidation.error],
+      }
+    }
+
+    const { errors } = runValidators(value, this.validators)
+
+    return {
+      hasPassed: true,
+      errors,
+    }
   }
 }
