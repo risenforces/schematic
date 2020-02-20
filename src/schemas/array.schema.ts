@@ -22,7 +22,7 @@ export class ArraySchema extends BaseSchema implements SchematicSchema {
     this.membersSchema = membersSchema
   }
 
-  membersSchema?: SchematicSchema
+  protected membersSchema?: SchematicSchema
 
   of(schema: SchematicSchema): this {
     this.membersSchema = schema

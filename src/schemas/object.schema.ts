@@ -32,7 +32,7 @@ export class ObjectSchema extends BaseSchema implements SchematicSchema {
     this.shapeSchema = shapeSchema
   }
 
-  shapeSchema: ShapeSchema
+  protected shapeSchema: ShapeSchema
 
   shape(schema: ShapeSchema): this {
     this.shapeSchema = schema
