@@ -16,8 +16,12 @@
     "target": "es6",
     "declaration": true,
     "declarationDir": "./dist",
-    "baseUrl": "./",
     "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@app": ["./"],
+      "@app/*": ["./*"]
+    },
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types"]
   },
