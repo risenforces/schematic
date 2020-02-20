@@ -1,11 +1,9 @@
-import { ValidatorCode, ValidationError, Validator } from '@app/types'
+import { ValidationError, Validator } from '@app/types'
 import { sortValidators } from './sort-validators'
-
-type PassedValidatorsMap = Map<ValidatorCode, true>
+import { runValidator } from './run-validator'
 
 export interface RunValidatorsResult {
   errors: ValidationError[]
-  passedValidatorsMap: PassedValidatorsMap
 }
 
 export function runValidators(
@@ -15,32 +13,17 @@ export function runValidators(
 ): RunValidatorsResult {
   const errors: ValidationError[] = []
 
-  const passedValidatorsMap: PassedValidatorsMap = new Map()
-
   /* First, process validators for the current schema */
 
   const sortedValidators = sortValidators(validators)
 
   for (const validator of sortedValidators) {
-    const { validate, code, message, requires = [] } = validator
+    const validation = runValidator(value, validator)
 
-    const requiredValidatorsPassed = requires.every(code => {
-      return passedValidatorsMap.has(code)
-    })
+    if (validation.isValid) continue
 
-    if (!requiredValidatorsPassed) {
-      continue
-    }
-
-    const isValid = validate(value)
-
-    if (isValid) {
-      passedValidatorsMap.set(code, true)
-      continue
-    }
-
-    errors.push({ code, message })
+    errors.push(validation.error)
   }
 
-  return { errors, passedValidatorsMap }
+  return { errors }
 }

@@ -1,8 +1,12 @@
 import { Validator, ShapeSchema, SchematicSchema } from '@app/types'
 import { Meta } from '@app/schemas/types'
 
+export function cloneValidator(validator: Validator): Validator {
+  return Object.assign({}, validator)
+}
+
 export function cloneValidators(validators: Validator[]): Validator[] {
-  return validators.map(validator => Object.assign({}, validator))
+  return validators.map(cloneValidator)
 }
 
 export function cloneMeta(meta: Meta): Meta {

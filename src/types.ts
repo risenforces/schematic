@@ -22,6 +22,15 @@ export type ValidatorCode =
   | 'number/positive'
   | 'number/negative'
   | 'string'
+  | 'string/length'
+  | 'string/min'
+  | 'string/max'
+  | 'string/matches'
+  | 'string/email'
+  | 'string/url'
+  | 'string/trimmed'
+  | 'string/uppercased'
+  | 'string/lowercased'
   | 'boolean'
   | 'date'
 
@@ -30,7 +39,6 @@ export interface Validator {
   validate: (value: any) => boolean
   code: ValidatorCode
   message: string
-  requires?: ValidatorCode[]
 }
 
 export interface Modifier {

@@ -7,11 +7,14 @@ describe('BaseSchema', () => {
   let schema: BaseSchema
 
   beforeEach(() => {
-    schema = new BaseSchema([])
+    schema = new BaseSchema({
+      baseValidator: {} as Validator,
+    })
   })
 
   describe('validators', () => {
     it('should have correct value after BaseSchema instantiation', () => {
+      expect(schema['baseValidator']).toEqual({})
       expect(schema['validators']).toEqual([])
     })
 

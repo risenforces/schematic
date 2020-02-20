@@ -4,7 +4,7 @@ import { NumberSchema } from './number.schema'
 
 describe('NumberSchema', () => {
   test('clone', () => {
-    const schema = new NumberSchema()
+    const schema = new NumberSchema({})
       .message('number')
       .message('required')
       .min(0)

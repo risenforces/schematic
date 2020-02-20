@@ -5,9 +5,23 @@ import {
   cloneMeta,
   cloneShapeSchema,
   cloneArrayMemberSchemas,
+  cloneValidator,
 } from './clone'
 
 describe('clone utils', () => {
+  test('cloneValidator', () => {
+    const validator = {
+      validate: () => true,
+      code: 'first',
+      message: 'first',
+    }
+
+    const clonedValidator = cloneValidator(validator as Validator)
+
+    expect(clonedValidator).not.toBe(validator)
+    expect(clonedValidator).toEqual(validator)
+  })
+
   test('cloneValidators', () => {
     const validators = [
       { validate: () => true, code: 'first', message: 'first' },

@@ -1,13 +1,20 @@
 import { Validator } from '@app/types'
 import { getLastOf } from '@app/lib/get-last-of'
 import { getInitialMeta } from './shared'
-import { Meta } from './types'
+import { Meta, BaseSchemaOptions } from './types'
 
 export class BaseSchema {
-  constructor(validators: Validator[], meta: Meta = getInitialMeta()) {
+  constructor({
+    baseValidator,
+    validators = [],
+    meta = getInitialMeta(),
+  }: BaseSchemaOptions) {
+    this.baseValidator = baseValidator
     this.validators = validators
     this.meta = meta
   }
+
+  protected baseValidator: Validator
 
   protected validators: Validator[]
 
@@ -32,7 +39,10 @@ export class BaseSchema {
   }
 
   message(text: string): this {
-    const lastValidator = getLastOf(this.validators)
+    const lastValidator =
+      this.validators.length > 0
+        ? getLastOf(this.validators)
+        : this.baseValidator
 
     lastValidator.message = text
 

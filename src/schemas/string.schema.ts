@@ -1,11 +1,11 @@
 import { SchematicSchema } from '@app/types'
-import { numberValidators } from '@app/validators'
+import { numberValidators, stringValidators } from '@app/validators'
 import { SpecificPrimitiveSchemaOptions } from './types'
 import { PrimitiveSchema } from './primitive.schema'
 
-export class NumberSchema extends PrimitiveSchema implements SchematicSchema {
+export class StringSchema extends PrimitiveSchema implements SchematicSchema {
   constructor({
-    baseValidator = numberValidators.number(),
+    baseValidator = stringValidators.string(),
     validators,
     meta,
   }: SpecificPrimitiveSchemaOptions) {
@@ -16,8 +16,8 @@ export class NumberSchema extends PrimitiveSchema implements SchematicSchema {
     })
   }
 
-  clone(): NumberSchema {
-    return this.cloneWith(NumberSchema)
+  clone(): StringSchema {
+    return this.cloneWith(StringSchema)
   }
 
   finite(): this {

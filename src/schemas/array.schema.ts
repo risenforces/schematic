@@ -1,25 +1,26 @@
 import { arrayValidators } from '@app/validators'
-import {
-  Validator,
-  ValidationResult,
-  ValidationError,
-  SchematicSchema,
-} from '@app/types'
+import { ValidationResult, ValidationError, SchematicSchema } from '@app/types'
 import { createValidationResult } from '@app/lib/create-validation-result'
-import { cloneValidators, cloneMeta } from '@app/lib/clone'
+import { cloneValidators, cloneMeta, cloneValidator } from '@app/lib/clone'
 import { runValidators } from '@app/lib/run-validators'
 import { runRequiredCheck } from '@app/lib/run-required-check'
 import { normalizeNestedErrors } from '@app/lib/normalize-nested-errors'
+import { runValidator } from '@app/lib/run-validator'
 import { BaseSchema } from './base.schema'
-import { Meta } from './types'
+import { ArraySchemaOptions } from './types'
 
 export class ArraySchema extends BaseSchema implements SchematicSchema {
-  constructor(
-    validators: Validator[] = [arrayValidators.array()],
-    meta?: Meta,
-    membersSchema?: SchematicSchema
-  ) {
-    super(validators, meta)
+  constructor({
+    baseValidator = arrayValidators.array(),
+    validators,
+    meta,
+    membersSchema,
+  }: ArraySchemaOptions) {
+    super({
+      baseValidator,
+      validators,
+      meta,
+    })
 
     this.membersSchema = membersSchema
   }
@@ -58,20 +59,19 @@ export class ArraySchema extends BaseSchema implements SchematicSchema {
       return createValidationResult(requiredCheck.errors)
     }
 
-    /* First, process validators for the current schema */
+    /* First, run base validator */
 
-    const { errors, passedValidatorsMap } = runValidators(
-      value,
-      this.validators
-    )
+    const baseValidation = runValidator(value, this.baseValidator)
 
-    /* When "array" validator did not passed, we don't need to check value with shape schema */
-
-    if (!passedValidatorsMap.has('array')) {
-      return createValidationResult(errors)
+    if (!baseValidation.isValid) {
+      return createValidationResult([baseValidation.error])
     }
 
-    /* Everything is alright, we can check it using the member schemas */
+    /* Second, process validators for the current schema */
+
+    const { errors } = runValidators(value, this.validators)
+
+    /* Everything is alright, we can get to the members schema validation */
 
     for (let i = 0; i < value.length; i++) {
       const item = value[i]
@@ -94,13 +94,11 @@ export class ArraySchema extends BaseSchema implements SchematicSchema {
   }
 
   clone(): ArraySchema {
-    const clonedValidators = cloneValidators(this.validators)
-    const clonedMeta = cloneMeta(this.meta)
-
-    return new ArraySchema(
-      clonedValidators,
-      clonedMeta,
-      this.membersSchema?.clone()
-    )
+    return new ArraySchema({
+      baseValidator: cloneValidator(this.baseValidator),
+      validators: cloneValidators(this.validators),
+      meta: cloneMeta(this.meta),
+      membersSchema: this.membersSchema?.clone(),
+    })
   }
 }

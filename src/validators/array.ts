@@ -11,8 +11,7 @@ export const min = (limit: number): Validator => ({
     return value.length >= limit
   },
   code: 'array/min',
-  message: `Value must contain at least ${limit} items`,
-  requires: ['array'],
+  message: `Value must have at least ${limit} items`,
 })
 
 export const max = (limit: number): Validator => ({
@@ -20,8 +19,7 @@ export const max = (limit: number): Validator => ({
     return value.length <= limit
   },
   code: 'array/max',
-  message: `Value must contain no more than ${limit} items`,
-  requires: ['array'],
+  message: `Value must have at most ${limit} items`,
 })
 
 export const unique = (): Validator => ({
@@ -37,5 +35,4 @@ export const unique = (): Validator => ({
   },
   code: 'array/unique',
   message: `All value items must be unique`,
-  requires: ['array'],
 })

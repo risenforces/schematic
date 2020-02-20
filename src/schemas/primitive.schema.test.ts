@@ -6,7 +6,16 @@ describe('PrimitiveSchema', () => {
     test('required', () => {
       let schema: PrimitiveSchema
 
-      schema = new PrimitiveSchema([]).required()
+      const baseValidator = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        validate: (value: any) => value === 1,
+        code: '1',
+        message: '1',
+      }
+
+      schema = new PrimitiveSchema({
+        baseValidator: baseValidator as Validator,
+      }).required()
 
       expect(schema.validate(undefined)).toEqual({
         isValid: false,
@@ -20,7 +29,9 @@ describe('PrimitiveSchema', () => {
 
       expect(schema.validate(1).isValid).toBe(true)
 
-      schema = new PrimitiveSchema([])
+      schema = new PrimitiveSchema({
+        baseValidator: baseValidator as Validator,
+      })
 
       expect(schema.validate(undefined).isValid).toBe(true)
       expect(schema.validate(null).isValid).toBe(true)
@@ -28,7 +39,13 @@ describe('PrimitiveSchema', () => {
     })
 
     test('validators', () => {
-      const mockValidators = [
+      const baseValidator = {
+        validate: () => true,
+        code: '',
+        message: '',
+      }
+
+      const validators = [
         {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           validate: (value: any) => value === 'pass',
@@ -39,11 +56,13 @@ describe('PrimitiveSchema', () => {
           validate: () => true,
           code: 'hello2',
           message: 'Hello2',
-          requires: ['hello'],
         },
       ]
 
-      const schema = new PrimitiveSchema(mockValidators as Validator[])
+      const schema = new PrimitiveSchema({
+        baseValidator: baseValidator as Validator,
+        validators: validators as Validator[],
+      })
 
       expect(schema.validate('value')).toEqual({
         isValid: false,

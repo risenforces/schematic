@@ -1,26 +1,36 @@
 import { objectValidators } from '@app/validators'
 import {
-  Validator,
   ValidationResult,
   ValidationError,
   ShapeSchema,
   SchematicSchema,
 } from '@app/types'
 import { createValidationResult } from '@app/lib/create-validation-result'
-import { cloneValidators, cloneMeta, cloneShapeSchema } from '@app/lib/clone'
+import {
+  cloneValidators,
+  cloneMeta,
+  cloneShapeSchema,
+  cloneValidator,
+} from '@app/lib/clone'
 import { runValidators } from '@app/lib/run-validators'
 import { runRequiredCheck } from '@app/lib/run-required-check'
 import { normalizeNestedErrors } from '@app/lib/normalize-nested-errors'
+import { runValidator } from '@app/lib/run-validator'
 import { BaseSchema } from './base.schema'
-import { Meta } from './types'
+import { ObjectSchemaOptions } from './types'
 
 export class ObjectSchema extends BaseSchema implements SchematicSchema {
-  constructor(
-    validators: Validator[] = [objectValidators.object()],
-    meta?: Meta,
-    shapeSchema: ShapeSchema = {}
-  ) {
-    super(validators, meta)
+  constructor({
+    baseValidator = objectValidators.object(),
+    validators,
+    meta,
+    shapeSchema = {},
+  }: ObjectSchemaOptions) {
+    super({
+      baseValidator,
+      validators,
+      meta,
+    })
 
     this.shapeSchema = shapeSchema
   }
@@ -41,20 +51,19 @@ export class ObjectSchema extends BaseSchema implements SchematicSchema {
       return createValidationResult(requiredCheck.errors)
     }
 
-    /* First, process validators for the current schema */
+    /* First, run base validator */
 
-    const { errors, passedValidatorsMap } = runValidators(
-      value,
-      this.validators
-    )
+    const baseValidation = runValidator(value, this.baseValidator)
 
-    /* When "object" validator did not passed, we don't need to check value with shape schema */
-
-    if (!passedValidatorsMap.has('object')) {
-      return createValidationResult(errors)
+    if (!baseValidation.isValid) {
+      return createValidationResult([baseValidation.error])
     }
 
-    /* Everything is alright, we can check it using the shape schema */
+    /* Second, process validators for the current schema */
+
+    const { errors } = runValidators(value, this.validators)
+
+    /* Everything is alright, we can get to the shape schema validation */
 
     for (const field in this.shapeSchema) {
       const schema = this.shapeSchema[field]
@@ -75,10 +84,11 @@ export class ObjectSchema extends BaseSchema implements SchematicSchema {
   }
 
   clone(): ObjectSchema {
-    const clonedValidators = cloneValidators(this.validators)
-    const clonedMeta = cloneMeta(this.meta)
-    const clonedShapeSchema = cloneShapeSchema(this.shapeSchema)
-
-    return new ObjectSchema(clonedValidators, clonedMeta, clonedShapeSchema)
+    return new ObjectSchema({
+      baseValidator: cloneValidator(this.baseValidator),
+      validators: cloneValidators(this.validators),
+      meta: cloneMeta(this.meta),
+      shapeSchema: cloneShapeSchema(this.shapeSchema),
+    })
   }
 }

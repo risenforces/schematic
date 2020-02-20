@@ -23,7 +23,6 @@ describe('runValidators', () => {
         validate: validateB,
         code: 'hello2',
         message: 'Hello2',
-        requires: ['hello'],
       },
     ]
 
@@ -35,20 +34,16 @@ describe('runValidators', () => {
 
     expect(validateA).toBeCalledTimes(1)
     expect(validateA).toBeCalledWith('value')
-    expect(validateB).toBeCalledTimes(0)
+    expect(validateB).toBeCalledTimes(1)
+    expect(validateB).toBeCalledWith('value')
 
     result = runValidators('pass', mockValidators as Validator[])
 
     expect(result.errors).toEqual([])
 
-    expect(Array.from(result.passedValidatorsMap.keys())).toEqual([
-      'hello',
-      'hello2',
-    ])
-
     expect(validateA).toBeCalledTimes(2)
     expect(validateA).toBeCalledWith('pass')
-    expect(validateB).toBeCalledTimes(1)
+    expect(validateB).toBeCalledTimes(2)
     expect(validateB).toBeCalledWith('pass')
   })
 })

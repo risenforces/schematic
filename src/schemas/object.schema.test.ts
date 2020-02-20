@@ -7,14 +7,14 @@ describe('ObjectSchema', () => {
   let schema: ObjectSchema
 
   beforeEach(() => {
-    schema = new ObjectSchema()
+    schema = new ObjectSchema({})
   })
 
   test('shape', () => {
     expect(schema['shapeSchema']).toEqual({})
 
     const shapeSchema = {
-      hello: new NumberSchema(),
+      hello: new NumberSchema({}),
     }
 
     schema.shape(shapeSchema)
@@ -42,8 +42,8 @@ describe('ObjectSchema', () => {
 
     test('1 level nesting', () => {
       schema.shape({
-        integer: new NumberSchema().integer().required(),
-        float: new NumberSchema().float().required(),
+        integer: new NumberSchema({}).integer().required(),
+        float: new NumberSchema({}).float().required(),
       })
 
       expect(schema.validate(undefined)).toEqual({ isValid: true, errors: [] })
@@ -125,8 +125,8 @@ describe('ObjectSchema', () => {
 
     test('2 level nesting', () => {
       schema.shape({
-        nested: new ObjectSchema().shape({
-          hello: new NumberSchema().positive().required(),
+        nested: new ObjectSchema({}).shape({
+          hello: new NumberSchema({}).positive().required(),
         }),
       })
 
@@ -209,9 +209,9 @@ describe('ObjectSchema', () => {
 
     test('3 level nesting', () => {
       schema.shape({
-        nested: new ObjectSchema().shape({
-          nested: new ObjectSchema().shape({
-            hello: new NumberSchema().positive(),
+        nested: new ObjectSchema({}).shape({
+          nested: new ObjectSchema({}).shape({
+            hello: new NumberSchema({}).positive(),
           }),
         }),
       })

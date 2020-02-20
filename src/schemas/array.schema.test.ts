@@ -7,13 +7,13 @@ describe('ArraySchema', () => {
   let schema: ArraySchema
 
   beforeEach(() => {
-    schema = new ArraySchema()
+    schema = new ArraySchema({})
   })
 
   test('of', () => {
     expect(schema['membersSchema']).toBeUndefined()
 
-    const membersSchema = new NumberSchema()
+    const membersSchema = new NumberSchema({})
 
     schema.of(membersSchema)
 
@@ -39,7 +39,7 @@ describe('ArraySchema', () => {
     })
 
     test('1 level nesting', () => {
-      schema.of(new NumberSchema().integer())
+      schema.of(new NumberSchema({}).integer())
 
       expect(schema.validate(undefined)).toEqual({ isValid: true, errors: [] })
       expect(schema.validate(null)).toEqual({ isValid: true, errors: [] })

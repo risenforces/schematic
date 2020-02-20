@@ -22,6 +22,16 @@ export const VALIDATOR_PRIORITIES: Record<ValidatorCode, number> = {
   'number/negative': 900,
 
   'string': 1000,
+  'string/length': 900,
+  'string/min': 900,
+  'string/max': 900,
+  'string/matches': 900,
+  'string/email': 900,
+  'string/url': 900,
+  'string/trimmed': 900,
+  'string/uppercased': 900,
+  'string/lowercased': 900,
+
   'boolean': 1000,
   'date': 1000,
 }

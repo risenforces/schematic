@@ -14,14 +14,12 @@ export const finite = (): Validator => ({
   validate: Number.isFinite,
   code: 'number/finite',
   message: 'Value must be finite',
-  requires: ['number'],
 })
 
 export const integer = (): Validator => ({
   validate: Number.isInteger,
   code: 'number/integer',
   message: 'Value must be an integer',
-  requires: ['number'],
 })
 
 export const float = (): Validator => ({
@@ -30,7 +28,6 @@ export const float = (): Validator => ({
   },
   code: 'number/float',
   message: 'Value must be a float',
-  requires: ['number'],
 })
 
 export const min = (limit: number): Validator => ({
@@ -39,7 +36,6 @@ export const min = (limit: number): Validator => ({
   },
   code: 'number/min',
   message: `Value must be greater than or equal to ${limit}`,
-  requires: ['number'],
 })
 
 export const max = (limit: number): Validator => ({
@@ -48,7 +44,6 @@ export const max = (limit: number): Validator => ({
   },
   code: 'number/max',
   message: `Value must be less than or equal to ${limit}`,
-  requires: ['number'],
 })
 
 export const lessThan = (limit: number): Validator => ({
@@ -57,7 +52,6 @@ export const lessThan = (limit: number): Validator => ({
   },
   code: 'number/less-than',
   message: `Value must be less than ${limit}`,
-  requires: ['number'],
 })
 
 export const greaterThan = (limit: number): Validator => ({
@@ -66,7 +60,6 @@ export const greaterThan = (limit: number): Validator => ({
   },
   code: 'number/greater-than',
   message: `Value must be greater than ${limit}`,
-  requires: ['number'],
 })
 
 export const positive = (): Validator => ({
@@ -75,7 +68,6 @@ export const positive = (): Validator => ({
   },
   code: 'number/positive',
   message: 'Value must be a positive number',
-  requires: ['number'],
 })
 
 export const negative = (): Validator => ({
@@ -84,5 +76,4 @@ export const negative = (): Validator => ({
   },
   code: 'number/negative',
   message: 'Value must be a negative number',
-  requires: ['number'],
 })
