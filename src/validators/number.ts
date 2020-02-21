@@ -1,28 +1,30 @@
-import { Validator } from '@app/types'
+import { Validator, BaseValidator } from '@app/types'
 
-export const number = (): Validator => ({
-  validate: value => {
+type NumberValidator = Validator<number>
+
+export const number = (): BaseValidator<number> => ({
+  validate: (value): value is number => {
     if (typeof value !== 'number') return false
-    if (isNaN(value)) return false
+    if (Number.isNaN(value)) return false
     return true
   },
   code: 'number',
   message: 'Value must be a number',
 })
 
-export const finite = (): Validator => ({
+export const finite = (): NumberValidator => ({
   validate: Number.isFinite,
   code: 'number/finite',
   message: 'Value must be finite',
 })
 
-export const integer = (): Validator => ({
+export const integer = (): NumberValidator => ({
   validate: Number.isInteger,
   code: 'number/integer',
   message: 'Value must be an integer',
 })
 
-export const float = (): Validator => ({
+export const float = (): NumberValidator => ({
   validate: value => {
     return Number.isFinite(value) && value % 1 !== 0
   },
@@ -30,7 +32,7 @@ export const float = (): Validator => ({
   message: 'Value must be a float',
 })
 
-export const min = (limit: number): Validator => ({
+export const min = (limit: number): NumberValidator => ({
   validate: value => {
     return value >= limit
   },
@@ -38,7 +40,7 @@ export const min = (limit: number): Validator => ({
   message: `Value must be greater than or equal to ${limit}`,
 })
 
-export const max = (limit: number): Validator => ({
+export const max = (limit: number): NumberValidator => ({
   validate: value => {
     return value <= limit
   },
@@ -46,7 +48,7 @@ export const max = (limit: number): Validator => ({
   message: `Value must be less than or equal to ${limit}`,
 })
 
-export const lessThan = (limit: number): Validator => ({
+export const lessThan = (limit: number): NumberValidator => ({
   validate: value => {
     return value < limit
   },
@@ -54,7 +56,7 @@ export const lessThan = (limit: number): Validator => ({
   message: `Value must be less than ${limit}`,
 })
 
-export const greaterThan = (limit: number): Validator => ({
+export const greaterThan = (limit: number): NumberValidator => ({
   validate: value => {
     return value > limit
   },
@@ -62,7 +64,7 @@ export const greaterThan = (limit: number): Validator => ({
   message: `Value must be greater than ${limit}`,
 })
 
-export const positive = (): Validator => ({
+export const positive = (): NumberValidator => ({
   validate: value => {
     return value > 0
   },
@@ -70,7 +72,7 @@ export const positive = (): Validator => ({
   message: 'Value must be a positive number',
 })
 
-export const negative = (): Validator => ({
+export const negative = (): NumberValidator => ({
   validate: value => {
     return value < 0
   },

@@ -6,10 +6,9 @@ export interface RunValidatorsResult {
   errors: ValidationError[]
 }
 
-export function runValidators(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any,
-  validators: Validator[]
+export function runValidators<V>(
+  value: V,
+  validators: Validator<V>[]
 ): RunValidatorsResult {
   const errors: ValidationError[] = []
 

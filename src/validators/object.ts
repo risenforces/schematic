@@ -1,7 +1,7 @@
-import { Validator } from '@app/types'
+import { BaseValidator } from '@app/types'
 
-export const object = (): Validator => ({
-  validate: value => {
+export const object = (): BaseValidator<Record<string, unknown>> => ({
+  validate: (value): value is Record<string, unknown> => {
     return Object.prototype.toString.call(value) === '[object Object]'
   },
   code: 'object',

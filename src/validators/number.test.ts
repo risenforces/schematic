@@ -8,7 +8,11 @@ interface ExpectedResults {
   fail: any[]
 }
 
-function check(validator: Validator, expectedResults: ExpectedResults): void {
+function check(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validator: Validator<any>,
+  expectedResults: ExpectedResults
+): void {
   const { pass, fail } = expectedResults
 
   for (const value of pass) {

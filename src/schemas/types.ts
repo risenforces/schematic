@@ -1,22 +1,29 @@
-import { Validator, ShapeSchema, SchematicSchema } from '@app/types'
+import {
+  Validator,
+  ShapeSchema,
+  SchematicSchema,
+  BaseValidator,
+} from '@app/types'
 
-export interface BaseSchemaOptions {
-  baseValidator: Validator
-  validators?: Validator[]
+export interface BaseSchemaOptions<V> {
+  baseValidator: BaseValidator<V>
+  validators?: Validator<V>[]
   meta?: Meta
 }
 
-export interface SpecificPrimitiveSchemaOptions {
-  baseValidator?: Validator
-  validators?: Validator[]
+export interface SpecificPrimitiveSchemaOptions<V> {
+  baseValidator?: BaseValidator<V>
+  validators?: Validator<V>[]
   meta?: Meta
 }
 
-export type ObjectSchemaOptions = SpecificPrimitiveSchemaOptions & {
+export type ObjectSchemaOptions = SpecificPrimitiveSchemaOptions<
+  Record<string, unknown>
+> & {
   shapeSchema?: ShapeSchema
 }
 
-export type ArraySchemaOptions = SpecificPrimitiveSchemaOptions & {
+export type ArraySchemaOptions = SpecificPrimitiveSchemaOptions<unknown[]> & {
   membersSchema?: SchematicSchema
 }
 

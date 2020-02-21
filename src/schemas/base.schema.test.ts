@@ -1,6 +1,6 @@
 /* eslint-disable dot-notation */
 
-import { Validator } from '@app/types'
+import { Validator, BaseValidator } from '@app/types'
 import { BaseSchema } from './base.schema'
 
 describe('BaseSchema', () => {
@@ -8,7 +8,7 @@ describe('BaseSchema', () => {
 
   beforeEach(() => {
     schema = new BaseSchema({
-      baseValidator: {} as Validator,
+      baseValidator: {} as BaseValidator<unknown>,
     })
   })
 

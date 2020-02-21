@@ -1,6 +1,5 @@
 export interface SchematicSchema {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validate: (value: any) => ValidationResult
+  validate: (value: unknown) => ValidationResult
   clone: () => SchematicSchema
 }
 
@@ -34,9 +33,16 @@ export type ValidatorCode =
   | 'boolean'
   | 'date'
 
-export interface Validator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validate: (value: any) => boolean
+export interface Validator<V = unknown> {
+  validate: (value: V) => boolean
+  code: ValidatorCode
+  message: string
+}
+
+// export type BaseValidator = Validator<unknown>
+
+export interface BaseValidator<V> {
+  validate: (value: unknown) => value is V
   code: ValidatorCode
   message: string
 }

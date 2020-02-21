@@ -16,7 +16,8 @@ import { normalizeNestedErrors } from '@app/lib/normalize-nested-errors'
 import { BaseSchema } from './base.schema'
 import { ObjectSchemaOptions } from './types'
 
-export class ObjectSchema extends BaseSchema implements SchematicSchema {
+export class ObjectSchema extends BaseSchema<Record<string, unknown>>
+  implements SchematicSchema {
   constructor({
     baseValidator = objectValidators.object(),
     validators,
@@ -40,18 +41,21 @@ export class ObjectSchema extends BaseSchema implements SchematicSchema {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validate(value: any): ValidationResult {
-    const { hasPassed, errors } = this.runBasicValidation(value)
+  validate(value: unknown): ValidationResult {
+    const basicValidation = this.runBasicValidation(value)
 
-    if (!hasPassed) {
-      return createValidationResult(errors)
+    if (!basicValidation.hasPassed) {
+      return createValidationResult(basicValidation.errors)
     }
+
+    const { castedValue, errors } = basicValidation
 
     for (const field in this.shapeSchema) {
       const schema = this.shapeSchema[field]
 
-      const { isValid, errors: fieldErrors } = schema.validate(value[field])
+      const { isValid, errors: fieldErrors } = schema.validate(
+        castedValue[field]
+      )
 
       if (isValid) continue
 
@@ -69,7 +73,7 @@ export class ObjectSchema extends BaseSchema implements SchematicSchema {
   clone(): ObjectSchema {
     return new ObjectSchema({
       baseValidator: cloneValidator(this.baseValidator),
-      validators: cloneValidators(this.validators),
+      validators: cloneValidators<Record<string, unknown>>(this.validators),
       meta: cloneMeta(this.meta),
       shapeSchema: cloneShapeSchema(this.shapeSchema),
     })

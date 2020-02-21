@@ -1,12 +1,14 @@
-import { Validator } from '@app/types'
+import { Validator, BaseValidator } from '@app/types'
 
-export const array = (): Validator => ({
+type ArrayValidator = Validator<unknown[]>
+
+export const array = (): BaseValidator<unknown[]> => ({
   validate: Array.isArray,
   code: 'array',
   message: 'Value must be an array',
 })
 
-export const min = (limit: number): Validator => ({
+export const min = (limit: number): ArrayValidator => ({
   validate: value => {
     return value.length >= limit
   },
@@ -14,7 +16,7 @@ export const min = (limit: number): Validator => ({
   message: `Value must have at least ${limit} items`,
 })
 
-export const max = (limit: number): Validator => ({
+export const max = (limit: number): ArrayValidator => ({
   validate: value => {
     return value.length <= limit
   },
@@ -22,7 +24,7 @@ export const max = (limit: number): Validator => ({
   message: `Value must have at most ${limit} items`,
 })
 
-export const unique = (): Validator => ({
+export const unique = (): ArrayValidator => ({
   validate: value => {
     const map = new Map()
 

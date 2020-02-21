@@ -2,24 +2,22 @@ import { ValidationResult } from '@app/types'
 import { cloneValidators, cloneMeta, cloneValidator } from '@app/lib/clone'
 import { createValidationResult } from '@app/lib/create-validation-result'
 import { BaseSchema } from './base.schema'
-import { BaseSchemaOptions } from './types'
+import { SpecificPrimitiveSchemaOptions } from './types'
 
-type SchemaClassType<I> = new (options: BaseSchemaOptions) => I
-
-export class PrimitiveSchema extends BaseSchema {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validate(value: any): ValidationResult {
+export class PrimitiveSchema<V> extends BaseSchema<V> {
+  validate(value: unknown): ValidationResult {
     const { errors } = this.runBasicValidation(value)
 
     return createValidationResult(errors)
   }
 
-  protected cloneWith<I extends BaseSchema, C extends SchemaClassType<I>>(
-    SchemaClass: C
-  ): I {
+  protected cloneWith<
+    I extends PrimitiveSchema<V>,
+    C extends new (options: SpecificPrimitiveSchemaOptions<V>) => I
+  >(SchemaClass: C): I {
     return new SchemaClass({
       baseValidator: cloneValidator(this.baseValidator),
-      validators: cloneValidators(this.validators),
+      validators: cloneValidators<V>(this.validators),
       meta: cloneMeta(this.meta),
     })
   }

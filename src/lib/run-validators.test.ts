@@ -9,8 +9,7 @@ describe('runValidators', () => {
   })
 
   test('with validators', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const validateA = jest.fn((value: any) => value === 'pass')
+    const validateA = jest.fn((value: unknown) => value === 'pass')
     const validateB = jest.fn(() => true)
 
     const mockValidators = [

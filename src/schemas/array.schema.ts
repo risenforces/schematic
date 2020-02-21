@@ -6,7 +6,8 @@ import { normalizeNestedErrors } from '@app/lib/normalize-nested-errors'
 import { BaseSchema } from './base.schema'
 import { ArraySchemaOptions } from './types'
 
-export class ArraySchema extends BaseSchema implements SchematicSchema {
+export class ArraySchema extends BaseSchema<unknown[]>
+  implements SchematicSchema {
   constructor({
     baseValidator = arrayValidators.array(),
     validators,
@@ -48,16 +49,17 @@ export class ArraySchema extends BaseSchema implements SchematicSchema {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  validate(value: any): ValidationResult {
-    const { hasPassed, errors } = this.runBasicValidation(value)
+  validate(value: unknown): ValidationResult {
+    const basicValidation = this.runBasicValidation(value)
 
-    if (!hasPassed) {
-      return createValidationResult(errors)
+    if (!basicValidation.hasPassed) {
+      return createValidationResult(basicValidation.errors)
     }
 
-    for (let i = 0; i < value.length; i++) {
-      const item = value[i]
+    const { castedValue, errors } = basicValidation
+
+    for (let i = 0; i < castedValue.length; i++) {
+      const item = castedValue[i]
 
       if (!this.membersSchema) continue
 
@@ -79,7 +81,7 @@ export class ArraySchema extends BaseSchema implements SchematicSchema {
   clone(): ArraySchema {
     return new ArraySchema({
       baseValidator: cloneValidator(this.baseValidator),
-      validators: cloneValidators(this.validators),
+      validators: cloneValidators<unknown[]>(this.validators),
       meta: cloneMeta(this.meta),
       membersSchema: this.membersSchema?.clone(),
     })

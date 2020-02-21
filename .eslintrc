@@ -46,6 +46,7 @@
           }
         ]
       }
-    ]
+    ],
+    "@typescript-eslint/array-type": "off"
   }
 }

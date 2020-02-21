@@ -10,8 +10,7 @@ export type RunRequiredCheckResult =
     }
 
 export function runRequiredCheck(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any,
+  value: unknown,
   required: boolean
 ): RunRequiredCheckResult {
   if (value != null) {

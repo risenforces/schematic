@@ -1,4 +1,4 @@
-import { Validator, ValidationError } from '@app/types'
+import { ValidationError, BaseValidator } from '@app/types'
 
 type RunValidatorResult =
   | {
@@ -9,10 +9,10 @@ type RunValidatorResult =
       error: ValidationError
     }
 
-export function runValidator<V, T extends Validator<V> = Validator<V>>(
-  value: V,
-  validator: T
-): RunValidatorResult {
+export function runBaseValidator<
+  V,
+  T extends BaseValidator<V> = BaseValidator<V>
+>(value: unknown, validator: T): RunValidatorResult {
   const { validate, code, message } = validator
 
   if (validate(value)) {

@@ -1,20 +1,19 @@
-import { Validator } from '@app/types'
+import { Validator, BaseValidator } from '@app/types'
 import { PrimitiveSchema } from './primitive.schema'
 
 describe('PrimitiveSchema', () => {
   describe('validate', () => {
     test('required', () => {
-      let schema: PrimitiveSchema
+      let schema: PrimitiveSchema<1>
 
       const baseValidator = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        validate: (value: any) => value === 1,
+        validate: (value: unknown) => value === 1,
         code: '1',
         message: '1',
       }
 
       schema = new PrimitiveSchema({
-        baseValidator: baseValidator as Validator,
+        baseValidator: baseValidator as BaseValidator<1>,
       }).required()
 
       expect(schema.validate(undefined)).toEqual({
@@ -30,7 +29,7 @@ describe('PrimitiveSchema', () => {
       expect(schema.validate(1).isValid).toBe(true)
 
       schema = new PrimitiveSchema({
-        baseValidator: baseValidator as Validator,
+        baseValidator: baseValidator as BaseValidator<1>,
       })
 
       expect(schema.validate(undefined).isValid).toBe(true)
@@ -40,7 +39,7 @@ describe('PrimitiveSchema', () => {
 
     test('validators', () => {
       const baseValidator = {
-        validate: () => true,
+        validate: (value: unknown) => typeof value === 'string',
         code: '',
         message: '',
       }
@@ -60,7 +59,7 @@ describe('PrimitiveSchema', () => {
       ]
 
       const schema = new PrimitiveSchema({
-        baseValidator: baseValidator as Validator,
+        baseValidator: baseValidator as BaseValidator<string>,
         validators: validators as Validator[],
       })
 

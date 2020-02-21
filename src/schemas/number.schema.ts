@@ -3,12 +3,13 @@ import { numberValidators } from '@app/validators'
 import { SpecificPrimitiveSchemaOptions } from './types'
 import { PrimitiveSchema } from './primitive.schema'
 
-export class NumberSchema extends PrimitiveSchema implements SchematicSchema {
+export class NumberSchema extends PrimitiveSchema<number>
+  implements SchematicSchema {
   constructor({
     baseValidator = numberValidators.number(),
     validators,
     meta,
-  }: SpecificPrimitiveSchemaOptions) {
+  }: SpecificPrimitiveSchemaOptions<number>) {
     super({
       baseValidator,
       validators,

@@ -3,12 +3,13 @@ import { stringValidators } from '@app/validators'
 import { SpecificPrimitiveSchemaOptions } from './types'
 import { PrimitiveSchema } from './primitive.schema'
 
-export class StringSchema extends PrimitiveSchema implements SchematicSchema {
+export class StringSchema extends PrimitiveSchema<string>
+  implements SchematicSchema {
   constructor({
     baseValidator = stringValidators.string(),
     validators,
     meta,
-  }: SpecificPrimitiveSchemaOptions) {
+  }: SpecificPrimitiveSchemaOptions<string>) {
     super({
       baseValidator,
       validators,

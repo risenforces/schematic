@@ -1,12 +1,21 @@
-import { Validator, ShapeSchema, SchematicSchema } from '@app/types'
+import {
+  Validator,
+  ShapeSchema,
+  SchematicSchema,
+  BaseValidator,
+} from '@app/types'
 import { Meta } from '@app/schemas/types'
 
-export function cloneValidator(validator: Validator): Validator {
+type AnyValidator<V> = Validator<V> | BaseValidator<V>
+
+export function cloneValidator<V, T extends AnyValidator<V>>(validator: T): T {
   return Object.assign({}, validator)
 }
 
-export function cloneValidators(validators: Validator[]): Validator[] {
-  return validators.map(cloneValidator)
+export function cloneValidators<V, T extends Validator<V> = Validator<V>>(
+  validators: T[]
+): T[] {
+  return validators.map(validator => cloneValidator<V, T>(validator))
 }
 
 export function cloneMeta(meta: Meta): Meta {
