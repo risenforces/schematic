@@ -1,5 +1,5 @@
 import { SchematicSchema } from '@app/types'
-import { numberValidators, stringValidators } from '@app/validators'
+import { stringValidators } from '@app/validators'
 import { SpecificPrimitiveSchemaOptions } from './types'
 import { PrimitiveSchema } from './primitive.schema'
 
@@ -20,44 +20,56 @@ export class StringSchema extends PrimitiveSchema implements SchematicSchema {
     return this.cloneWith(StringSchema)
   }
 
-  finite(): this {
-    this.addValidator(numberValidators.finite())
+  length(length: number): this {
+    this.addValidator(stringValidators.length(length))
 
     return this
   }
 
-  integer(): this {
-    this.addValidator(numberValidators.integer())
+  min(limit: number): this {
+    this.addValidator(stringValidators.min(limit))
 
     return this
   }
 
-  float(): this {
-    this.addValidator(numberValidators.float())
+  max(limit: number): this {
+    this.addValidator(stringValidators.max(limit))
 
     return this
   }
 
-  min(threshold: number): this {
-    this.addValidator(numberValidators.min(threshold))
+  matches(regex: RegExp): this {
+    this.addValidator(stringValidators.matches(regex))
 
     return this
   }
 
-  max(threshold: number): this {
-    this.addValidator(numberValidators.max(threshold))
+  email(): this {
+    this.addValidator(stringValidators.email())
 
     return this
   }
 
-  positive(): this {
-    this.addValidator(numberValidators.positive())
+  url(): this {
+    this.addValidator(stringValidators.url())
 
     return this
   }
 
-  negative(): this {
-    this.addValidator(numberValidators.negative())
+  trimmed(): this {
+    this.addValidator(stringValidators.trimmed())
+
+    return this
+  }
+
+  lowercased(): this {
+    this.addValidator(stringValidators.lowercased())
+
+    return this
+  }
+
+  uppercased(): this {
+    this.addValidator(stringValidators.uppercased())
 
     return this
   }
